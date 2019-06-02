@@ -1,18 +1,25 @@
 var formidable = require('formidable');
+var fs = require('fs');
+var mv = require('mv');
 
 exports.upload = function(request, response) {
     console.log("Rozpoczynam obsługę żądania upload.");
     var form = new formidable.IncomingForm();
     form.parse(request, function(error, fields, files) {
-        fs.renameSync(files.upload.path, "test.png");
+
+        mv(files.upload.path, "D:\Kodilla\Projects\14_project\test.png", {mkdirp: true}, function(err) {
+            // done. it first created all the necessary directories, and then
+            // tried fs.rename, then falls back to using ncp to copy the dir
+            // to dest and then rimraf to remove the source dir
+          });
+
+//        fs.renameSync(files.upload.path, "test.png");
         response.writeHead(200, {"Content-Type": "text/html"});
         response.write("received image:<br/>");
         response.write("<img src='/show' />");
         response.end();
     });
 }
-
-var fs = require('fs');
 
 exports.welcome = function(request, response) {
     console.log("Rozpoczynam obsługę żądania welcome.");
